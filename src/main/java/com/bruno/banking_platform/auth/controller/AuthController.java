@@ -5,6 +5,7 @@ import com.bruno.banking_platform.auth.dto.LoginResponse;
 import com.bruno.banking_platform.auth.dto.RegisterRequest;
 import com.bruno.banking_platform.auth.dto.UserResponse;
 import com.bruno.banking_platform.auth.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ public class AuthController {
 
     private final AuthService authService;
 
+    @Operation(summary = "Register an user", description = "Register an user with name, email and password.")
     @PostMapping("/register")
     public ResponseEntity<UserResponse> register(@Valid @RequestBody RegisterRequest request) {
 
@@ -29,6 +31,7 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    @Operation(summary = "User Login", description = "Users can login with email and password.")
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(
             @Valid @RequestBody LoginRequest request
