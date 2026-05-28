@@ -3,6 +3,7 @@ CREATE TABLE accounts (
     account_number VARCHAR(20) UNIQUE NOT NULL,
     balance NUMERIC(19,2) NOT NULL,
     user_id UUID NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_account_user
         FOREIGN KEY (user_id)
