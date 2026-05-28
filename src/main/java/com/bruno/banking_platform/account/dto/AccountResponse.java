@@ -1,6 +1,5 @@
 package com.bruno.banking_platform.account.dto;
 
-import com.bruno.banking_platform.account.domain.AccountStatus;
 import lombok.Builder;
 
 import java.math.BigDecimal;
@@ -11,9 +10,15 @@ import java.util.UUID;
 public record AccountResponse(
 
         UUID id,
+
         String accountNumber,
+
         BigDecimal balance,
-        AccountStatus status,
+
+        String status,
+
+        UUID userId,
+
         LocalDateTime createdAt
 
 ) {
