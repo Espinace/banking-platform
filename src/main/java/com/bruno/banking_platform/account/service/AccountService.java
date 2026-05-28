@@ -63,7 +63,8 @@ public class AccountService {
                 .id(account.getId())
                 .accountNumber(account.getAccountNumber())
                 .balance(account.getBalance())
-                .status(account.getStatus())
+                .status(account.getStatus().name())
+                .userId(account.getUser().getId())
                 .createdAt(account.getCreatedAt())
                 .build();
     }
