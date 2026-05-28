@@ -30,8 +30,12 @@ public class Transaction {
     private String description;
 
     @ManyToOne
-    @JoinColumn(name = "account_id")
-    private Account account;
+    @JoinColumn(name = "sender_account_id")
+    private Account senderAccount;
+
+    @ManyToOne
+    @JoinColumn(name = "receiver_account_id")
+    private Account receiverAccount;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
