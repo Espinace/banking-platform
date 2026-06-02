@@ -3,6 +3,7 @@ package com.bruno.banking_platform.transaction.controller;
 import com.bruno.banking_platform.transaction.dto.DepositRequest;
 import com.bruno.banking_platform.transaction.dto.TransactionResponse;
 import com.bruno.banking_platform.transaction.dto.TransferRequest;
+import com.bruno.banking_platform.transaction.dto.WithdrawRequest;
 import com.bruno.banking_platform.transaction.service.TransactionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,5 +31,13 @@ public class TransactionController {
             @RequestBody @Valid TransferRequest request
     ) {
         return transactionService.transfer(request);
+    }
+
+    @PostMapping("/withdraw")
+    @ResponseStatus(HttpStatus.OK)
+    public TransactionResponse withdraw(
+            @RequestBody @Valid WithdrawRequest request
+    ) {
+        return transactionService.withdraw(request);
     }
 }
