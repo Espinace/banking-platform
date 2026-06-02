@@ -7,6 +7,7 @@ import com.bruno.banking_platform.transaction.domain.TransactionType;
 import com.bruno.banking_platform.transaction.dto.DepositRequest;
 import com.bruno.banking_platform.transaction.dto.TransactionResponse;
 import com.bruno.banking_platform.transaction.dto.TransferRequest;
+import com.bruno.banking_platform.transaction.dto.WithdrawRequest;
 import com.bruno.banking_platform.transaction.repository.TransactionRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -94,6 +95,40 @@ public class TransactionService {
 
         accountRepository.save(senderAccount);
         accountRepository.save(receiverAccount);
+
+        return mapToResponse(transaction);
+    }
+
+    @Transactional
+    public TransactionResponse withdraw(WithdrawRequest request) {
+
+        if (request.amount().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new RuntimeException("Amount must be greater than zero");
+        }
+
+        Account account = accountRepository.findById(request.accountId())
+                .orElseThrow(() ->
+                        new RuntimeException("Account not found"));
+
+        if (account.getBalance().compareTo(request.amount()) < 0) {
+            throw new RuntimeException("Insufficient balance");
+        }
+
+        account.setBalance(
+                account.getBalance().subtract(request.amount())
+        );
+
+        Transaction transaction = Transaction.builder()
+                .amount(request.amount())
+                .type(TransactionType.WITHDRAW)
+                .description("Withdraw from account " + account.getId())
+                .senderAccount(account)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        transactionRepository.save(transaction);
+
+        accountRepository.save(account);
 
         return mapToResponse(transaction);
     }
