@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
@@ -23,6 +24,10 @@ public class TransactionService {
 
     @Transactional
     public TransactionResponse deposit(DepositRequest request) {
+
+        if (request.amount().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new RuntimeException("Amount must be greater than zero");
+        }
 
         Account account = accountRepository.findById(request.accountId())
                 .orElseThrow(() ->
@@ -43,18 +48,7 @@ public class TransactionService {
 
         accountRepository.save(account);
 
-        return new TransactionResponse(
-                transaction.getId(),
-                transaction.getType(),
-                transaction.getAmount(),
-                transaction.getSenderAccount() != null
-                        ? transaction.getSenderAccount().getId()
-                        : null,
-                transaction.getReceiverAccount() != null
-                        ? transaction.getReceiverAccount().getId()
-                        : null,
-                transaction.getCreatedAt()
-        );
+        return mapToResponse(transaction);
     }
 
     @Transactional
@@ -98,6 +92,11 @@ public class TransactionService {
 
         accountRepository.save(senderAccount);
         accountRepository.save(receiverAccount);
+
+        return mapToResponse(transaction);
+    }
+
+    private TransactionResponse mapToResponse(Transaction transaction) {
 
         return new TransactionResponse(
                 transaction.getId(),
