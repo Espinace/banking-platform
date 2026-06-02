@@ -41,6 +41,7 @@ public class TransactionService {
                 .amount(request.amount())
                 .type(TransactionType.DEPOSIT)
                 .receiverAccount(account)
+                .description("Deposit to account " + account.getId())
                 .createdAt(LocalDateTime.now())
                 .build();
 
@@ -85,6 +86,7 @@ public class TransactionService {
                 .type(TransactionType.TRANSFER)
                 .senderAccount(senderAccount)
                 .receiverAccount(receiverAccount)
+                .description("Transfer from account " + senderAccount.getId() + " to account " + receiverAccount.getId())
                 .createdAt(LocalDateTime.now())
                 .build();
 
