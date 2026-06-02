@@ -2,6 +2,8 @@ package com.bruno.banking_platform.transaction.service;
 
 import com.bruno.banking_platform.account.domain.Account;
 import com.bruno.banking_platform.account.repository.AccountRepository;
+import com.bruno.banking_platform.shared.exception.AccountNotFoundException;
+import com.bruno.banking_platform.shared.exception.InsufficientBalanceException;
 import com.bruno.banking_platform.transaction.domain.Transaction;
 import com.bruno.banking_platform.transaction.domain.TransactionType;
 import com.bruno.banking_platform.transaction.dto.DepositRequest;
@@ -15,6 +17,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +36,7 @@ public class TransactionService {
 
         Account account = accountRepository.findById(request.accountId())
                 .orElseThrow(() ->
-                        new RuntimeException("Account not found"));
+                        new AccountNotFoundException("Account not found"));
 
         account.setBalance(
                 account.getBalance().add(request.amount())
@@ -63,15 +67,15 @@ public class TransactionService {
         Account senderAccount = accountRepository
                 .findById(request.senderAccountId())
                 .orElseThrow(() ->
-                        new RuntimeException("Sender account not found"));
+                        new AccountNotFoundException("Sender account not found"));
 
         Account receiverAccount = accountRepository
                 .findById(request.receiverAccountId())
                 .orElseThrow(() ->
-                        new RuntimeException("Receiver account not found"));
+                        new AccountNotFoundException("Receiver account not found"));
 
         if (senderAccount.getBalance().compareTo(request.amount()) < 0) {
-            throw new RuntimeException("Insufficient balance");
+            throw new InsufficientBalanceException("Insufficient balance");
         }
 
         senderAccount.setBalance(
@@ -108,10 +112,10 @@ public class TransactionService {
 
         Account account = accountRepository.findById(request.accountId())
                 .orElseThrow(() ->
-                        new RuntimeException("Account not found"));
+                        new AccountNotFoundException("Account not found"));
 
         if (account.getBalance().compareTo(request.amount()) < 0) {
-            throw new RuntimeException("Insufficient balance");
+            throw new InsufficientBalanceException("Insufficient balance");
         }
 
         account.setBalance(
@@ -131,6 +135,22 @@ public class TransactionService {
         accountRepository.save(account);
 
         return mapToResponse(transaction);
+    }
+
+    public List<TransactionResponse> getStatement(UUID accountId) {
+
+        accountRepository.findById(accountId)
+                .orElseThrow(() ->
+                        new AccountNotFoundException("Account not found"));
+
+        return transactionRepository
+                .findBySenderAccountIdOrReceiverAccountId(
+                        accountId,
+                        accountId
+                )
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
     }
 
     private TransactionResponse mapToResponse(Transaction transaction) {
