@@ -27,8 +27,8 @@ This project focuses on backend engineering best practices, including RESTful AP
 
 * [x] Project structure and Docker setup
 * [x] JWT authentication and authorization
-* [ ] Account management (create, retrieve, update)
-* [ ] Transaction processing (deposits, withdrawals)
+* [x] Account management (create, retrieve, update)
+* [x] Transaction processing (deposits, withdrawals)
 * [ ] Fund transfers between accounts
 * [ ] Transaction history and balance queries
 * [ ] Input validation and exception handling
