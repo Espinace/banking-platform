@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/transactions")
 @RequiredArgsConstructor
@@ -39,5 +42,12 @@ public class TransactionController {
             @RequestBody @Valid WithdrawRequest request
     ) {
         return transactionService.withdraw(request);
+    }
+
+    @GetMapping("/account/{accountId}")
+    public List<TransactionResponse> getStatement(
+            @PathVariable UUID accountId
+    ) {
+        return transactionService.getStatement(accountId);
     }
 }
