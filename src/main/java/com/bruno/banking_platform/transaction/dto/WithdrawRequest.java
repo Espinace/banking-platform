@@ -8,11 +8,14 @@ import java.util.UUID;
 
 public record WithdrawRequest(
 
-        @NotNull
+        @NotNull(message = "Account id is required")
         UUID accountId,
 
-        @NotNull
-        @DecimalMin("0.01")
+        @NotNull(message = "Amount is required")
+        @DecimalMin(
+                value = "0.01",
+                message = "Amount must be greater than zero"
+        )
         BigDecimal amount
 ) {
 }
